@@ -30,3 +30,35 @@ module.exports.login = validate([
   }).bail(),
   body('password').notEmpty().withMessage('密码不能为空').bail().isLength({ min: 5 }).withMessage('密码长度不能小于5').bail(),
 ])
+module.exports.update = validate([
+  body('email').custom(async (val) => {
+    if (val && !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(val)) {
+      return Promise.reject('请输入正确的邮箱')
+    }
+  }).bail().custom(async (val) => {
+    const emailValidate = await User.findOne({ email: val })
+    if (emailValidate) {
+      return Promise.reject('此邮箱已经被注册')
+    }
+  }).bail(),
+  body('username').custom(async (val) => {
+    if (val && val.length < 3) {
+      return Promise.reject('用户名长度必须大于等于3')
+    }
+  }).bail().custom(async (val) => {
+    const usernameValidate = await User.findOne({ username: val })
+    if (usernameValidate) {
+      return Promise.reject('此用户名已经被注册')
+    }
+  }).bail(),
+  body('phone').custom(async (val) => {
+    if (val && !/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(val)) {
+      return Promise.reject('请输入正确的手机号')
+    }
+  }).bail().custom(async (val) => {
+    const phoneValidate = await User.findOne({ phone: val })
+    if (phoneValidate) {
+      return Promise.reject('此电话号码已经被注册')
+    }
+  }).bail(),
+])
