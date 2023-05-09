@@ -5,6 +5,8 @@ const { verifyToken } = require('../util/jwt')
 const { videoValidator } = require('../middleware/validator/videoValidator')
 const router = express.Router()
 router
+.get('/gethots/:topnum', videoController.gethots)
+.get('/collect/:videoId', verifyToken(), videoController.collect)
 .get('/likelist', verifyToken(), videoController.likelist)
 .get('/dislike/:videoId', verifyToken(), videoController.dislikevideo)
 .get('/like/:videoId', verifyToken(), videoController.likevideo)
